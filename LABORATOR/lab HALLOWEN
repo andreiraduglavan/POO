@@ -1,0 +1,67 @@
+#include <iostream>
+#include <string.h>
+
+using namespace std;
+
+class Decoratiune {
+
+private:
+    char* dec;
+public:
+    Decoratiune() {
+        dec=new char[strlen("obj")+1];
+        strcpy(this->dec,"obj");
+
+    }
+
+    Decoratiune(char* dec) {
+        this->dec=dec;
+    }
+    Decoratiune& operator =(const Decoratiune& deco) {
+        if(this!=&deco) {
+            this->dec=deco.dec;
+
+        }
+    }
+
+    void afisare() {
+        cout<<this->dec;
+    }
+};
+
+class ListaProduse {
+private:
+    int nrdec;
+    Decoratiune* dec;
+public:
+    ListaProduse() {
+        nrdec=0;
+        dec=NULL;
+    }
+    ListaProduse(int nrdec, Decoratiune* dec) {
+        this-> nrdec=nrdec;
+        this-> dec=new Decoratiune[nrdec];
+
+        for(int i=0; i<nrdec; i++)
+            this->dec[i]=dec[i];
+
+    }
+    void afisare() {
+        for(int i=0; i<this->nrdec; i++) {
+            this->dec[i].afisare();
+            cout<<" ";
+        }
+    }
+
+};
+int main()
+{
+    Decoratiune a("obiect"), b, c("ali");
+    b=a;
+    Decoratiune lista[]={a,b,c};
+
+    ListaProduse p(3, lista);
+    p.afisare();
+
+    return 0;
+}
