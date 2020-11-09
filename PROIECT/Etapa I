@@ -1,0 +1,619 @@
+#include <iostream>
+#include <string.h>
+
+using namespace std;
+
+class Jucator {
+private:
+    const int nrcrt;
+    char* nume;
+    int an;
+    float inaltime;
+    int nretape;
+    int nrEseuri;
+    int* etape;
+    char pozitie[100];
+    bool statutJS;
+
+public:
+    static int  nrJuc, l;
+
+    Jucator():nrcrt(l++) {
+
+    nume=new char[strlen("Anonim")+1];
+    strcpy(this->nume,"Anonim");
+    an=1900;
+    nrEseuri=0;
+    nretape=0;
+    etape=nullptr;
+    strcpy(pozitie, "la");
+    statutJS=true;
+    nrJuc++;
+
+
+    }
+
+    Jucator(char* nume, int an, float inaltime,int nrEseuri,int nretape, int* etape, char pozitie[100], bool statuJS):nrcrt(l++) {
+    this->nume=new char[strlen(nume)+1];
+    strcpy(this->nume, nume);
+    this->an=an;
+    this->inaltime=inaltime;
+    this->nretape=nretape;
+    this->etape=new int[nretape];
+    for(int i=0; i<nretape; i++)
+        this->etape[i]=etape[i];
+    this->nrEseuri=nrEseuri;
+    strcpy(this->pozitie, pozitie);
+    this->statutJS=statuJS;
+    nrJuc++;
+    }
+
+    friend istream& operator>>(istream& in, Jucator& juc) {
+
+        cout<<"\nintroduceti numele ";
+        char nume1[100];
+        in>>nume1;
+        strcpy(juc.nume, nume1);
+
+        cout<<"\nintroduceti an ";
+        int an;
+        in>>an;
+        juc.an=an;
+
+        cout<<"\nintroduceti inaltimea ";
+        float h;
+        in>>h;
+        juc.inaltime=h;
+
+        cout<<"\nintroduceti nr de etape jucate ";
+        int nr;
+        in>>nr;
+        juc.nretape=nr;
+
+
+        cout<<"\nintroduceti etapele ";
+
+        juc.etape=new int[nr];
+
+        for(int i=0; i<nr; i++) {
+            int et;
+            in>>et;
+            juc.etape[i]=et;
+        }
+
+        cout<<"\nintroduceti nr eseuri: ";
+        int nr2;
+        in>>nr2;
+        juc.nrEseuri=nr2;
+
+        cout<<"\nintroduceti pozitia ";
+        char poz[100];
+        in>>poz;
+        strcpy(juc.pozitie, poz);
+        cout<<"\n statut junior senior? (true/false) ";
+        bool st;
+        in>>st;
+        juc.statutJS=st;
+
+        return in;
+    }
+
+    void afisare() {
+    cout<<this->nume<<" ";
+    for(int i=0; i<this->nretape; i++)
+        cout<<this->etape[i]<<" ";
+    cout<<" "<<this->inaltime;
+    cout<<" "<<statutJS;
+    cout<<" "<<pozitie;
+    cout<<" a marcat "<<nrEseuri<<" eseuri";
+    }
+
+    void setNume(char* a){
+
+            this->nume=new char[strlen(a)+1];
+            strcpy(this->nume,a);
+
+    }
+    void setInaltime(int a) {
+        this->inaltime=a;
+
+    }
+
+    void setAn(int a) {
+        this->an=a;
+    }
+    void setEtape(int* a, int b) {
+        this->nretape=b;
+        this->etape=new int(b);
+        for(int i=0; i<b; i++)
+            this->etape[i]=a[i];
+
+    }
+
+    void setPozitie(char* a) {
+        strcpy(this->pozitie, a);
+    }
+    void setStatutJS(bool a) {
+        this->statutJS=a;
+    }
+
+    char* getNume() {
+        return this->nume;
+    }
+    int getAn(){
+        return this->an;
+    }
+    float getInaltime() {
+        return this->inaltime;
+
+    }
+    int* getEtape() {
+        return this->etape;
+    }
+    char* getPozitie() {
+        return this->pozitie;
+    }
+    bool getStatut() {
+        return this->statutJS;
+    }
+    void setNrEseuri(int a) {
+        this->nrEseuri=a;
+    }
+    int getNrEseuri() {
+        return this->nrEseuri;
+    }
+
+    Jucator (const Jucator& juc):nrcrt(juc.nrcrt) {
+        this->nume=new char[strlen(juc.nume)+1];
+        strcpy(this->nume, juc.nume);
+        this->an=juc.an;
+        this->inaltime=juc.inaltime;
+        strcpy(this->pozitie, juc.pozitie);
+
+        this->nretape=juc.nretape;
+        this->etape=new int[nretape];
+        for(int i=0; i<nretape; i++)
+            this->etape[i]=juc.etape[i];
+        this->nrEseuri=juc.nrEseuri;
+        this->statutJS=juc.statutJS;
+    }
+
+    Jucator &operator =(const Jucator& juc) {
+        if(this!=&juc) {
+                if(this->nume!=nullptr) {
+                    delete[] this->nume;
+                }
+                this->nume=new char[strlen(juc.nume)+1];
+                strcpy(this->nume, juc.nume);
+                this->an=juc.an;
+                this->inaltime=juc.inaltime;
+                this->nretape=juc.nretape;
+                if(this->etape!=nullptr)
+                    delete[] this->etape;
+                this->etape=new int[nretape];
+                for(int i=0; i<nretape; i++)
+                    this->etape[i]=juc.etape[i];
+                this->nrEseuri=juc.nrEseuri;
+                strcpy(this->pozitie, juc.pozitie);
+                this->statutJS=juc.statutJS;
+
+        }
+        return *this;
+    }
+    ~Jucator() {
+        if(this->nume!=nullptr)
+            delete[] this-> nume;
+        if(this->etape!=nullptr)
+            delete[] this->etape;
+    }
+
+    Jucator& operator +(int a) {
+        int etape2[100];
+        if(this->etape!=nullptr) {
+            for(int i=0; i<this->nretape; i++)
+                etape2[i]=this->etape[i];
+            delete[] this->etape;
+        }
+        this->nretape++;
+        this->etape=new int[this->nretape];
+        for(int i=0; i<this->nretape-1; i++)
+            this->etape[i]=etape2[i];
+        this->etape[this->nretape-1]=a;
+        return *this;
+    }
+    Jucator& operator++(int) {
+        this->nrEseuri++;
+        return *this;
+    }
+    Jucator& operator-(float a) {
+        this->inaltime=this->inaltime-a;
+        return *this;
+    }
+    bool operator ==(Jucator& juc) {
+        if(this->inaltime==juc.inaltime)
+            {return true;}
+        else
+           {return false;}
+    }
+    bool operator <(Jucator& juc) {
+        if(this->inaltime<juc.inaltime)
+            {return true;}
+        else
+            {return false;}
+    }
+    bool operator >(Jucator& juc) {
+        if(this->inaltime>juc.inaltime)
+            {return true;}
+        else
+            {return false;}
+    }
+    explicit operator int() {
+        return (int)this->inaltime;
+    }
+    int operator[](int i) {
+        if(i>nretape-1) {
+            cout<<"index out\n";
+            return -1;
+        }
+        else{
+            return this->etape[i];
+        }
+    }
+    bool operator&&(const Jucator &juc) {
+        if(this->statutJS && juc.statutJS) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+
+};
+
+class eseu {
+private:
+    Jucator juc;
+    int minut;
+public:
+    eseu() {
+        Jucator a;
+        juc=a;
+        minut=0;
+    }
+    eseu(Jucator juc, int minut) {
+        this->juc=juc;
+        this->minut=minut;
+    }
+    eseu(const eseu& e) {
+        this->juc=e.juc;
+        this->minut=e.minut;
+    }
+    eseu& operator =(const eseu& e) {
+        if(this!=&e) {
+            this->juc=e.juc;
+            this->minut=e.minut;
+        }
+        return *this;
+    }
+
+    //~eseu();
+
+    void setJuc(Jucator juc) {
+        this->juc=juc;
+    }
+    void setMinut(int minut) {
+        this->minut=minut;
+    }
+    Jucator getJuc() {
+        return this->juc;
+    }
+    int getMinut() {
+        return this->minut;
+    }
+};
+
+class arbitru {
+private:
+    char* nume;
+    int varsta;
+    char clasificare;
+    bool licentaPro;
+public:
+    arbitru() {
+        nume=new char[strlen("anonim")+1];
+        strcpy(nume, "anonim");
+        varsta=0;
+        clasificare=NULL;
+        licentaPro=false;
+    }
+    arbitru(char* nume, int varsta, char clasificare, bool licentaPro) {
+        this->nume=new char(strlen(nume)+1);
+        strcpy(this->nume, nume);
+        this->varsta=varsta;
+        this->clasificare=clasificare;
+        this->licentaPro=licentaPro;
+    }
+    arbitru(const arbitru &a) {
+        this->nume=new char(strlen(a.nume)+1);
+        strcpy(this->nume, a.nume);
+        this->varsta=a.varsta;
+        this->clasificare=a.clasificare;
+        this->licentaPro=a.licentaPro;
+    }
+    arbitru &operator=(const arbitru& a) {
+        if(this!=&a) {
+            this->nume=new char(strlen(a.nume)+1);
+            strcpy(this->nume, a.nume);
+            this->varsta=a.varsta;
+            this->clasificare=a.clasificare;
+            this->licentaPro=a.licentaPro;
+        }
+        return *this;
+    }
+    ~arbitru() {
+        if(this->nume!=nullptr)
+            delete[] this->nume;
+    }
+    bool operator==(const arbitru& a) {
+        if(this->varsta==a.varsta)
+            return true;
+        else {return false;}
+    }
+    bool operator<(const arbitru& a) {
+        if(this->varsta<a.varsta)
+            return true;
+        else {return false;}
+    }
+    bool operator &&(const arbitru& a) {
+        if(this->licentaPro&&a.licentaPro)
+            return true;
+        else {
+            return false;
+        }
+    }
+    arbitru &operator++() {
+        this->varsta++;
+        return *this;
+    }
+    arbitru &operator+(int a) {
+        this->varsta=this->varsta+a;
+        return *this;
+    }
+    void licenta() {
+        this->licentaPro=true;
+    }
+    char* getNume() {
+        return this->nume;
+    }
+};
+
+class meci {
+private:
+    int nrjuc;
+    Jucator* echipa;
+    arbitru arb;
+    int nrtries;
+    eseu* tries;
+    const int etapa;
+    char* antrenor;
+    char stadion[100];
+    float temperatura;
+public:
+    static int et;
+    meci(): etapa(et++) {
+        nrjuc=0;
+        arbitru a;
+        arb=a;
+        echipa=nullptr;
+        nrtries=0;
+        tries=nullptr;
+        antrenor=new char[strlen("anonim")+1];
+        strcpy(antrenor, "anonim");
+        strcpy(stadion, "");
+        temperatura=0;
+
+    }
+
+    meci(int nrjuc, Jucator* echipa,arbitru arb,int nrtries, eseu* tries, char* antrenor, char stadion[100], float temperatura):etapa(et++) {
+        this->nrjuc=nrjuc;
+        this->echipa=new Jucator[nrjuc];
+        this->arb=arb;
+        for(int i=0; i<nrjuc; i++)
+            this->echipa[i]=echipa[i];
+        this->nrtries=nrtries;
+        this->tries=new eseu[nrtries];
+        for(int i=0; i<nrtries; i++)
+            this->tries[i]=tries[i];
+        this->antrenor=new char[strlen(antrenor)+1];
+        strcpy(this->antrenor, antrenor);
+        strcpy(this->stadion, stadion);
+        this->temperatura=temperatura;
+    }
+    meci(const meci& m):etapa(m.etapa) {
+        this->nrjuc=m.nrjuc;
+        this->arb=m.arb;
+        this->echipa=new Jucator[m.nrjuc];
+        for(int i=0; i<m.nrjuc; i++)
+            this->echipa[i]=m.echipa[i];
+        this->nrtries=m.nrtries;
+        this->tries=new eseu[m.nrtries];
+        for(int i=0; i<m.nrtries; i++)
+            this->tries[i]=m.tries[i];
+        this->antrenor=new char[strlen(m.antrenor)+1];
+        strcpy(this->antrenor, m.antrenor);
+        strcpy(this->stadion, m.stadion);
+        this->temperatura=m.temperatura;
+    }
+    ~meci() {
+        if(this->echipa!=nullptr)
+            delete[] this->echipa;
+        if(this->tries!=nullptr)
+            delete[] this->tries;
+        if(this->antrenor!=nullptr)
+            delete[] this->antrenor;
+    }
+    meci& operator=(const meci& m) {
+        if(this!=&m) {
+            this->nrjuc=m.nrjuc;
+            this->arb=m.arb;
+            if(this->echipa!=nullptr)
+                delete[] this->echipa;
+            this->echipa=new Jucator[m.nrjuc];
+            for(int i=0; i<m.nrjuc; i++)
+                this->echipa[i]=m.echipa[i];
+            this->nrtries=m.nrtries;
+            if(this->tries!=nullptr)
+                delete[] this->tries;
+            this->tries=new eseu[m.nrtries];
+            for(int i=0; i<m.nrtries; i++)
+                this->tries[i]=m.tries[i];
+            if(this->antrenor!=nullptr) {
+                delete[] this->antrenor;
+            }
+            this->antrenor=new char[strlen(m.antrenor)+1];
+            strcpy(this->antrenor, m.antrenor);
+            strcpy(this->stadion, m.stadion);
+            this->temperatura=m.temperatura;
+        }
+        return *this;
+    }
+
+    void afisare() {
+        cout<<"\nEchipa este:\n";
+        for(int i=0; i<this->nrjuc;i++) {
+            this->echipa[i].afisare();
+            cout<<endl;
+        }
+        cout<<"Antrenor "<<this->antrenor<<", s-au marcat "<<this->nrtries<<" iar arbitrul a fost "<<this->arb.getNume()<<".\n\n";
+
+    }
+
+    void AplicaEseurileSiEtapele() {
+        for(int i=0; i<this->nrtries; i++) {
+            this->tries[i].getJuc()++;
+        }
+
+        for(int i=0; i<this->nrjuc; i++)
+            this->echipa[i]+etapa;
+
+    }
+    void setAntrenor(char* a) {
+        this->antrenor=new char[strlen(a)+1];
+        strcpy(this->antrenor, a);
+    }
+    char* getAntrenor() {
+        return this->antrenor;
+    }
+    void setStadion(char* a) {
+        strcpy(this->stadion, a);
+    }
+    char* getStadion() {
+        return this->stadion;
+    }
+    int getNrjuc() {
+        return this->nrjuc;
+    }
+    void setNrjuc(int a) {
+        this->nrjuc=a;
+    }
+    void setEchipa(Jucator* a) {
+        this->echipa=new Jucator[this->nrjuc];
+        for(int i=0; i<nrjuc; i++)
+            this->echipa[i]=a[i];
+    }
+    Jucator* getEchipa() {
+        return this->echipa;
+    }
+    void setNreseuri(int a) {
+        this->nrtries=a;
+    }
+    void setEseuri(eseu* a) {
+        this->tries=new eseu[this->nrtries];
+        for(int i=0;i<nrtries ; i++)
+            this->tries[i]=a[i];
+    }
+    void setTemp(float a) {
+        this->temperatura=a;
+    }
+    float getTemp() {
+        return this->temperatura;
+    }
+
+    Jucator &operator[](int i) {
+        if(this->nrjuc>i-1){
+            cout<<"index out ofbounds\n";
+        }
+        else{
+            return this->echipa[i];
+        }
+    }
+    meci& operator++() {
+        this->temperatura++;
+        return *this;
+    }
+    meci& operator++(int) {
+        meci aux(*this);
+        this->temperatura++;
+        return aux;
+    }
+    meci& operator+(int a) {
+        this->temperatura=this->temperatura+a;
+        return *this;
+    }
+    explicit operator int() {
+        return (int)this->temperatura;
+
+    }
+    bool operator==(const meci &m) {
+        if(this->temperatura==m.temperatura)
+            return true;
+        else {
+            return false;
+        }
+    }
+    bool operator<(const meci &m) {
+        if(this->temperatura<m.temperatura)
+            return true;
+        else {
+            return false;
+        }
+    }
+    bool operator>(const meci &m) {
+        if(this->temperatura>m.temperatura)
+            return true;
+        else {
+            return false;
+        }
+    }
+
+};
+
+int Jucator:: nrJuc=0;
+int Jucator:: l=1;
+int meci:: et=1;
+
+int main()
+{
+    cout<<"RC GRIVITA\n\n";
+    int et[]={1,2};
+    char nume[]="Andrei";
+    char poz[]="flanker";
+    Jucator b(nume,2000, 1.85, 0, 0, nullptr, poz, true), l(nume, 1999,1.96, 0,0, nullptr, poz, true), h(nume,2001,1.87, 0,0, nullptr, poz, true) ;
+
+    Jucator ech[]={b,l,h};
+    arbitru a;
+
+    eseu e1(b, 27), e2(l,54), e3(h,3), e4(l, 27);
+
+    eseu m1[]={e1, e2, e3};
+    eseu m2[]={e1, e2, e4};
+
+    meci meci1(3, ech,a, 3, m1, "Oprisor", "Tineretului", 32), meci2(3, ech,a, 3, m2, "Oprisor", "Tineretului", 32);
+
+    meci1.AplicaEseurileSiEtapele();
+    meci2.AplicaEseurileSiEtapele();
+
+    meci2.afisare();
+    return 0;
+}
