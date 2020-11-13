@@ -1,0 +1,116 @@
+#include <iostream>
+#include <string.h>
+
+using namespace std;
+
+class Persoana {
+private:
+    string nume;
+    string cnp;
+    float inaltime;
+public:
+    Persoana(){
+        nume="Anonim";
+        cnp="0";
+        inaltime=0;
+    }
+    Persoana(string nume, string cnp, float inaltime) {
+        this->nume=nume;
+        this->cnp=cnp;
+        this->inaltime=inaltime;
+    }
+    Persoana(const Persoana& p) {
+        this->nume=p.nume;
+        this->cnp=p.cnp;
+        this->inaltime=p.inaltime;
+    }
+    Persoana &operator=(const Persoana &p) {
+        if(this!=&p) {
+            this->nume=p.nume;
+            this->cnp=p.cnp;
+            this->inaltime=p.inaltime;
+        }
+        return *this;
+    }
+    bool operator<(Persoana& p) {
+        if(this->inaltime < p.inaltime) {
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+};
+
+class Student: public Persoana {
+private:
+    string fac;
+    bool buget;
+    int nrnote;
+    int* note;
+public:
+    Student():Persoana() {
+        fac="NU";
+        buget=true;
+        nrnote=0;
+        note=nullptr;
+    }
+    Student(string nume, string cnp, float inaltime, string fac, bool buget, int nrnote, int* note):Persoana(nume, cnp, inaltime) {
+        this->fac=fac;
+        this->buget=buget;
+        this->nrnote=nrnote;
+        this->note= new int[nrnote];
+        for(int i=0; i<nrnote; i++)
+            this->note[i]=note[i];
+    }
+    Student(Persoana p, string fac, bool buget, int nrnote, int* note):Persoana(p){
+        this->fac=fac;
+        this->buget=buget;
+        this->nrnote=nrnote;
+        this->note= new int[nrnote];
+        for(int i=0; i<nrnote; i++)
+            this->note[i]=note[i];
+    }
+    Student(const Student& s): Persoana(s) {
+        this->fac=fac;
+        this->buget=buget;
+        this->nrnote=nrnote;
+        this->note= new int[nrnote];
+        for(int i=0; i<nrnote; i++)
+            this->note[i]=note[i];
+    }
+    int medie() {
+        int medie=0;
+        for(int i=0;i<this->nrnote; i++) {
+            medie=medie+this->note[i];
+        }
+        medie=medie/this->nrnote;
+        return medie;
+    }
+    bool operator<(const Student &s) {
+        int medie1=0, medie2=0;
+        for(int i=0;i<this->nrnote; i++) {
+            medie1=medie1+this->note[i];
+        }
+        medie1=medie1/this->nrnote;
+        for(int i=0; i<s.nrnote; i++)
+            medie2=medie2+s.note[i];
+        medie2=medie2/s.nrnote;
+        if(medie1<medie2) {
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+};
+
+using namespace std;
+
+int main()
+{
+    Persoana p1("a","5",1.85), p2("a", "3", 2), p3(p1);
+    int a[]={10,10,10}, b[]={9,9,9};
+    Student s1(p1, "fmi", true, 3, a), s2(p2, "fmi", false, 3, b);
+    cout<<(s2<s1);
+}
