@@ -1,0 +1,160 @@
+#include <iostream>
+
+using namespace std;
+
+class Automobil {
+protected:
+    string marca;
+    string model;
+public:
+    Automobil() {
+        marca="Anonim";
+        model="Anonim";
+    }
+    Automobil(string marca, string nume) {
+        this->marca=marca;
+        this->model=nume;
+    }
+    friend ostream& operator<<(ostream &out, const Automobil &b)
+	{
+
+		return b.Afisare(out);
+	}
+
+
+	virtual ostream& Afisare(ostream& out) const
+	{
+		out << "marca este "<<this->marca<<"modelul este "<<this->model;
+		return out;
+	}
+
+};
+class MasinaUndercover: public Automobil{
+private:
+    int viteza;
+    int gloante;
+public:
+    MasinaUndercover():Automobil(){
+        viteza=0;
+        gloante=0;
+    }
+    MasinaUndercover(string marca, string model, int viteza, int gloante):Automobil(marca, model){
+        this->viteza=viteza;
+        this->gloante=gloante;
+    }
+    virtual ostream& Afisare(ostream& out) const
+	{
+		out << "marca este "<<this->marca<<"modelul este "<<this->model<<"viteza maxima este "<<this->viteza<<"rezistenta la gloante este "<<this->gloante;
+		return out;
+	}
+};
+
+class MasinaInterventie: public Automobil{
+private:
+    int nrpersoane;
+    bool mitraliera;
+public:
+    MasinaInterventie():Automobil(){
+        nrpersoane=0;
+        mitraliera=false;
+    }
+    MasinaInterventie(string marca, string model, int nrpersoane, bool mitraliera):Automobil(marca, model){
+        this->nrpersoane=nrpersoane;
+        this->mitraliera=mitraliera;
+    }
+    virtual ostream& Afisare(ostream& out) const
+	{
+		out << "marca este "<<this->marca<<"modelul este "<<this->model<<"nr persoane este "<<this->nrpersoane<<"are sau n are mitealiera? "<<this->mitraliera;
+		return out;
+	}
+};
+class MasinaEmisieReceptie: public Automobil{
+private:
+    int distantaAudio;
+    int distantaVideo;
+public:
+    MasinaEmisieReceptie():Automobil(){
+        distantaAudio=0;
+        distantaVideo=0;
+    }
+    MasinaEmisieReceptie(string marca, string model, int distantaAudio, int distantaVideo):Automobil(marca, model) {
+        this->distantaAudio=distantaAudio;
+        this->distantaVideo=distantaVideo;
+    }
+    virtual ostream& Afisare(ostream& out) const
+	{
+		out << "marca este "<<this->marca<<"modelul este "<<this->model<<"distanta audio este "<<this->distantaAudio<<"distanta video este "<<this->distantaVideo;
+		return out;
+	}
+};
+
+class ListaMasini {
+private:
+    int n;
+    Automobil **listaMasini;
+public:
+    ListaMasini(){
+    n=0;
+    listaMasini=nullptr;
+    }
+    ListaMasini& operator+(MasinaUndercover m) {
+        this->n++;
+        Automobil *l[n-1];
+        for(int i=0; i<n-1; i++) {
+            l[i]=this->listaMasini[i];
+        }
+        this->listaMasini=new Automobil*[n];
+        for(int i=0; i<n; i++)
+            this->listaMasini[i]=l[i];
+        *this->listaMasini[n-1]=m;
+        return *this;
+    }
+    ListaMasini& operator+(MasinaInterventie m) {
+        this->n++;
+        Automobil *l[n-1];
+        for(int i=0; i<n-1; i++) {
+            l[i]=this->listaMasini[i];
+        }
+        this->listaMasini=new Automobil*[n];
+        for(int i=0; i<n; i++)
+            this->listaMasini[i]=l[i];
+        this->listaMasini[n-1]=&m;
+        return *this;
+    }
+    ListaMasini& operator+(MasinaEmisieReceptie m) {
+        this->n++;
+        Automobil *l[this->n-1];
+        for(int i=0; i<this->n-1; i++) {
+            l[i]=this->listaMasini[i];
+        }
+        this->listaMasini=new Automobil*[n];
+        for(int i=0; i<this->n; i++)
+            this->listaMasini[i]=l[i];
+        *this->listaMasini[n-1]=m;
+        return *this;
+    }
+    ListaMasini& operator=(const ListaMasini& m) {
+        this->n=m.n;
+        if(this->listaMasini!=nullptr){
+            delete[] this->listaMasini;
+        }
+        for(int i=0; i<this->n; i++) {
+            this->listaMasini[i]=m.listaMasini[i];
+        }
+        return *this;
+    }
+    Automobil** getLista() {
+        return this->listaMasini;
+    }
+
+};
+
+
+int main()
+{
+    ListaMasini a;
+    MasinaUndercover m("bmw", "se", 7, 8);
+    a=a+m;
+    cout<<a.getLista()[0];
+    return 0;
+}
