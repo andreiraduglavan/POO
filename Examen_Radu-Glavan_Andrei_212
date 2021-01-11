@@ -1,0 +1,238 @@
+/*Radu-Glavan Andrei 212
+GNU GCC compiler
+Eduard Szmenteaca*/
+
+#include <iostream>
+#include <string.h>
+#include <vector>
+#include <fstream>
+#include <exception>
+#include <stdexcept>
+#include <stdlib.h>
+#include <stdio.h>
+using namespace std;
+
+class vaccin {
+private:
+    int pret;
+    float tempDep;
+    vector<string> subst;
+public:
+    vaccin(){
+        pret=0;
+        tempDep=0;
+        vector<string> subst;
+        this->subst=subst;
+    }
+    friend ostream& operator<<(ostream& out, vaccin& v) {
+        return v.afisare(out);
+    }
+    virtual ostream& afisare(ostream& out) {
+        out<<pret<<" "<<tempDep<<" ";
+        for(int i=0; i<subst.size(); i++) {
+            out<<subst[i]<<" ";
+        }
+        out<<endl;
+        return out;
+    }
+    friend istream& operator>>(istream& in, vaccin& v) {
+        return v.citire(in);
+    }
+    virtual istream& citire(istream& in) {
+        cout<<"introduceti pret: ";
+        in>>pret;
+        cout<<"introduceti temperatura de dep: ";
+        in>>tempDep;
+        cout<<"introduceti numarul de substante: ";
+        int n;
+        in>>n;
+        cout<<"introduceti substantele: ";
+        subst.clear();
+        for(int i=0; i<n; i++) {
+            string subst1;
+            in>>subst1;
+            subst.push_back(subst1);
+        }
+        return in;
+    }
+    virtual void afisareSchemaVaccinare()=0;
+};
+class vaccinAntigripal: public vaccin {
+private:
+    vector<string> tulpini;
+    bool OMS;
+public:
+    vaccinAntigripal():vaccin(){
+        vector<string> tulpini;
+        this->tulpini=tulpini;
+        OMS=true;
+    }
+    virtual istream& citire(istream& in) {
+        vaccin::citire(in);
+        cout<<"introduceti numarul de tulpini: ";
+        int n;
+        in>>n;
+        tulpini.clear();
+        cout<<"introduceti tulpinile";
+        for(int i=0; i<n; i++) {
+            string tulpini1;
+            in>>tulpini1;
+            tulpini.push_back(tulpini1);
+        }
+        cout<<"introduceti daca este OMS(1/0): ";
+        in>>OMS;
+        return in;
+    }
+    virtual ostream& afisare(ostream& out) {
+        vaccin::afisare(out);
+        for(int i=0; i<tulpini.size(); i++) {
+            out<<tulpini[i]<<" ";
+        }
+        out<<endl<<OMS;
+        return out;
+    }
+    virtual void afisareSchemaVaccinare() {
+        cout<<"seadministrează la adulți o doză de 0.5 ml, iar la copii și adolescenți o doză de 0.3 ml, repetându-se din 2 în 2 ani";
+    }
+};
+
+class vaccinCov2: public vaccin {
+private:
+    vector<string> reactiiAdv;
+    float rata;
+    vector<string> listaMed;
+public:
+    vaccinCov2():vaccin(){
+        vector<string> reactiiAdv;
+        this->reactiiAdv=reactiiAdv;
+        rata=0;
+        vector<string> listaMed;
+        this->listaMed=listaMed;
+    }
+    virtual istream& citire(istream& in) {
+        vaccin::citire(in);
+        cout<<"introduceti numarul de reactii adverse: ";
+        int n;
+        in>>n;
+        reactiiAdv.clear();
+        cout<<"introduceti reactiile adverse: ";
+        for(int i=0; i<n; i++) {
+            string reactiiAdv1;
+            in>>reactiiAdv1;
+            reactiiAdv.push_back(reactiiAdv1);
+            cout<<endl;
+        }
+        cout<<"introduceti numarul de medicamente contraindicate: ";
+        in>>n;
+        listaMed.clear();
+        cout<<"introduceti medicamentele contraindicate: ";
+        for(int i=0; i<n; i++) {
+            string listaMed1;
+            in>>listaMed1;
+            listaMed.push_back(listaMed1);
+        }
+        cout<<"introduceti rata de eficaitate: ";
+        in>>rata;
+        return in;
+    }
+    virtual ostream& afisare(ostream& out) {
+        vaccin::afisare(out);
+        for(int i=0; i<reactiiAdv.size(); i++) {
+            out<<reactiiAdv[i]<<" ";
+        }
+        out<<endl;
+        for(int i=0; i<listaMed.size(); i++) {
+            out<<listaMed[i]<<" ";
+        }
+        out<<endl<<rata;
+        return out;
+    }
+    virtual void afisareSchemaVaccinare() {
+        cout<<" se administrează persoanelor cu vârstă de peste 16 ani, 2 doze la o perioadă de 21 zile.";
+    }
+};
+class vaccinAntiHepatic: public vaccin {
+private:
+    char tip;
+    string modVaccinare;
+public:
+    vaccinAntiHepatic():vaccin(){
+        tip='A';
+        modVaccinare="mod normal";
+    }
+    virtual istream& citire(istream& in) {
+        vaccin::citire(in);
+        cout<<"introduceti tipul hepatitei: ";
+        in>>tip;
+        cout<<"introduceti modul de vaccinare: ";
+        in>>modVaccinare;
+        return in;
+    }
+    virtual ostream& afisare(ostream& out) {
+        vaccin::afisare(out);
+        out<<tip<<" "<<modVaccinare<<endl;
+        return out;
+    }
+    virtual void afisareSchemaVaccinare() {
+        if(this->tip=='A'||tip=='B')
+            cout<<", la copii cu vârstă mai mică de 1 an se adminstrează 2 injectări la un interval de o lună, a treia injectare după 6 luni de la prima administrare, la adulți conform schemei de imunizare recomandată de medic";
+        else
+            cout<<" doar la recomandarea medicului";
+    }
+};
+class comanda {
+private:
+    const int id;
+    string data;
+    string spital;
+    string tipVaccin;
+    int nrDoze;
+public:
+    static int con;
+    comanda():id(con++) {
+        data="";
+        spital="";
+        tipVaccin="";
+        nrDoze=0;
+    }
+    comanda(string data, string spital, string tipVaccin, int nrDoze):id(con++) {
+        this->spital=spital;
+        this->data=data;
+        this->tipVaccin=tipVaccin;
+        this->nrDoze=nrDoze;
+    }
+};
+/*class listaComenzi {
+private:
+    vector<comanda> lista;
+public:
+    listaComenzi() {
+        vector<comanda> lista;
+        this->lista=lista;
+    }
+    listaComenzi (const listaComenzi& l) {
+        for(int i=0; i<l.lista.size(); i++) {
+            this->lista.push_back(l.lista[i]);
+        }
+    }
+    listaComenzi &operator =(const listaComenzi& l) {
+        this->lista.clear();
+        for(int i=0; i<l.lista.size(); i++) {
+            this->lista.push_back(l.lista[i]);
+        }
+        return *this;
+    }
+    listaComenzi &operator +(const comanda& c) {
+        this->lista.push_back(c);
+        return *this;
+    }
+};*/
+int comanda::con=0;
+int main()
+{
+    vaccin* b;
+    vaccinAntiHepatic a;
+    cin>>a;
+    cout<<a;
+    return 0;
+}
