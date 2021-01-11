@@ -201,8 +201,15 @@ public:
         this->tipVaccin=tipVaccin;
         this->nrDoze=nrDoze;
     }
+    comanda& operator=(const comanda &c) {
+        this->spital=spital;
+        this->data=data;
+        this->tipVaccin=tipVaccin;
+        this->nrDoze=nrDoze;
+        return *this;
+    }
 };
-/*class listaComenzi {
+class listaComenzi {
 private:
     vector<comanda> lista;
 public:
@@ -226,7 +233,7 @@ public:
         this->lista.push_back(c);
         return *this;
     }
-};*/
+};
 int comanda::con=0;
 int main()
 {
